@@ -38,7 +38,7 @@ type TeamRecord = {
 
 const roundSeconds = 300;
 const storageKey = "game-station-team-records";
-const imageVersion = "v20260805-8";
+const imageVersion = "v20260805-9";
 
 const emptyScores: Scores = { zoom: 0, bible: 0, hymn: 0 };
 const emptyRound2Progress: Round2Progress = {
@@ -84,18 +84,18 @@ const questions: Record<GameKey, Question[]> = {
     { id: "z34", image: "/questions/zoom/usb-drive-answer.png", answerImage: "/questions/zoom/usb-drive-answer.png", prompt: "What is this zoomed-in picture?", answer: "USB flash drive", clueScale: 8, cluePosition: "65% 58%" },
     { id: "z35", image: "/questions/zoom/chess-knight-answer.png", answerImage: "/questions/zoom/chess-knight-answer.png", prompt: "What is this zoomed-in picture?", answer: "Chess knight", clueScale: 7.2, cluePosition: "54% 34%" },
     { id: "z36", image: "/questions/zoom/garlic-press-answer.png", answerImage: "/questions/zoom/garlic-press-answer.png", prompt: "What is this zoomed-in picture?", answer: "Garlic press", clueScale: 5, cluePosition: "31% 67%" },
-    { id: "z37", image: "/questions/zoom/binder-clip-answer.png", answerImage: "/questions/zoom/binder-clip-answer.png", prompt: "What is this zoomed-in picture?", answer: "Binder clip", clueScale: 3.2, cluePosition: "40% 55%" },
+    { id: "z37", image: "/questions/zoom/binder-clip-clue.png", answerImage: "/questions/zoom/binder-clip-answer.png", prompt: "What is this zoomed-in picture?", answer: "Binder clip", clueScale: 1.35 },
     { id: "z38", image: "/questions/zoom/corkscrew-answer.png", answerImage: "/questions/zoom/corkscrew-answer.png", prompt: "What is this zoomed-in picture?", answer: "Corkscrew", clueScale: 7, cluePosition: "50% 62%" },
     { id: "z39", image: "/questions/zoom/adjustable-wrench-answer.png", answerImage: "/questions/zoom/adjustable-wrench-answer.png", prompt: "What is this zoomed-in picture?", answer: "Adjustable wrench", clueScale: 7, cluePosition: "50% 27%" },
     { id: "z40", image: "/questions/zoom/key-answer.png", answerImage: "/questions/zoom/key-answer.png", prompt: "What is this zoomed-in picture?", answer: "Key", clueScale: 7.5, cluePosition: "67% 59%" },
     { id: "z41", image: "/questions/zoom/salt-shaker-answer.png", answerImage: "/questions/zoom/salt-shaker-answer.png", prompt: "What is this zoomed-in picture?", answer: "Salt shaker", clueScale: 7, cluePosition: "50% 25%" },
-    { id: "z42", image: "/questions/zoom/spiral-notebook-answer.png", answerImage: "/questions/zoom/spiral-notebook-answer.png", prompt: "What is this zoomed-in picture?", answer: "Spiral notebook", clueScale: 16, cluePosition: "36% 52%" },
+    { id: "z42", image: "/questions/zoom/spiral-notebook-clue.png", answerImage: "/questions/zoom/spiral-notebook-answer.png", prompt: "What is this zoomed-in picture?", answer: "Spiral notebook", clueScale: 2.8, cluePosition: "48% 50%" },
     { id: "z43", image: "/questions/zoom/door-hinge-answer.png", answerImage: "/questions/zoom/door-hinge-answer.png", prompt: "What is this zoomed-in picture?", answer: "Door hinge", clueScale: 5, cluePosition: "50% 50%" },
     { id: "z44", image: "/questions/zoom/potato-masher-answer.png", answerImage: "/questions/zoom/potato-masher-answer.png", prompt: "What is this zoomed-in picture?", answer: "Potato masher", clueScale: 2, cluePosition: "50% 100%" },
     { id: "z45", image: "/questions/zoom/sunflower-answer.png", answerImage: "/questions/zoom/sunflower-answer.png", prompt: "What is this zoomed-in picture?", answer: "Sunflower", clueScale: 4.2, cluePosition: "51% 50%" },
     { id: "z46", image: "/questions/zoom/colander-answer.png", answerImage: "/questions/zoom/colander-answer.png", prompt: "What is this zoomed-in picture?", answer: "Colander", clueScale: 5.4, cluePosition: "50% 48%" },
     { id: "z47", image: "/questions/zoom/bicycle-pedal-answer.png", answerImage: "/questions/zoom/bicycle-pedal-answer.png", prompt: "What is this zoomed-in picture?", answer: "Bicycle pedal", clueScale: 2.6 },
-    { id: "z48", image: "/questions/zoom/safety-pin-answer.png", answerImage: "/questions/zoom/safety-pin-answer.png", prompt: "What is this zoomed-in picture?", answer: "Safety pin", clueScale: 4.5, cluePosition: "78% 54%" },
+    { id: "z48", image: "/questions/zoom/safety-pin-clue.png", answerImage: "/questions/zoom/safety-pin-answer.png", prompt: "What is this zoomed-in picture?", answer: "Safety pin", clueScale: 1.65, cluePosition: "42% 52%" },
     { id: "z49", image: "/questions/zoom/clothespin-answer.png", answerImage: "/questions/zoom/clothespin-answer.png", prompt: "What is this zoomed-in picture?", answer: "Clothespin", clueScale: 7, cluePosition: "50% 58%" },
     { id: "z50", image: "/questions/zoom/pepper-grinder-answer.png", answerImage: "/questions/zoom/pepper-grinder-answer.png", prompt: "What is this zoomed-in picture?", answer: "Pepper grinder", clueScale: 5.5, cluePosition: "50% 24%" },
   ],
@@ -683,7 +683,7 @@ export default function Home() {
   }
 
   return (
-    <main className={`shell play ${gameMeta[game].color}`}>
+    <main className={`shell play ${game} ${gameMeta[game].color}`}>
       <header className="play-header">
         <div className="play-team"><span className="brand-mark">GS</span>{teamBadge}</div>
         <div className={`timer ${seconds < 30 ? "urgent" : ""}`}><span>Time left</span><strong>{timeLabel}</strong></div>
