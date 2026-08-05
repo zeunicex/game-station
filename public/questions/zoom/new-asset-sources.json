@@ -1,0 +1,72 @@
+[
+  {
+    "slug": "velcro",
+    "term": "velcro macro hook and loop fastener",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/1/13/Bur_Macro_BlackBg.jpg",
+    "answer": "velcro-answer.jpg",
+    "zoom": "velcro-zoom.jpg"
+  },
+  {
+    "slug": "zipper",
+    "term": "zipper macro",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/6/67/5-wale.corduroy.%28trenkercord%29.macro.jpg",
+    "answer": "zipper-answer.jpg",
+    "zoom": "zipper-zoom.jpg"
+  },
+  {
+    "slug": "pencil-tip",
+    "term": "pencil tip macro graphite wood",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/d/d0/Pencil_Tip_Macro.jpg",
+    "answer": "pencil-tip-answer.jpg",
+    "zoom": "pencil-tip-zoom.jpg"
+  },
+  {
+    "slug": "stapler",
+    "term": "stapler macro",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Agrafeuse_Sunset_Mallat_n%C2%B0825_02.jpg",
+    "answer": "stapler-answer.jpg",
+    "zoom": "stapler-zoom.jpg"
+  },
+  {
+    "slug": "airpods-case",
+    "term": "earbuds case",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/c/c6/Teens_sharing_a_song.jpg",
+    "answer": "airpods-case-answer.jpg",
+    "zoom": "airpods-case-zoom.jpg"
+  },
+  {
+    "slug": "rubiks-cube",
+    "term": "Rubik's cube close up",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/f/ff/Rubiks_Cube_%2811913429076%29.jpg",
+    "answer": "rubiks-cube-answer.jpg",
+    "zoom": "rubiks-cube-zoom.jpg"
+  },
+  {
+    "slug": "keyboard-switch",
+    "term": "mechanical keyboard switch close up",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/c/c9/Apple_Desktop_Bus_keyboard_SMK_-_close_up_of_locking_SMK_key_switch_on_left.JPG",
+    "answer": "keyboard-switch-answer.jpg",
+    "zoom": "keyboard-switch-zoom.jpg"
+  },
+  {
+    "slug": "sushi-roll",
+    "term": "sushi roll close up",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/2/29/Philly_roll.jpg",
+    "answer": "sushi-roll-answer.jpg",
+    "zoom": "sushi-roll-zoom.jpg"
+  },
+  {
+    "slug": "book-pages",
+    "term": "book pages close up edge",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/6/67/Old_book_with_gilded_page_edges.JPG",
+    "answer": "book-pages-answer.jpg",
+    "zoom": "book-pages-zoom.jpg"
+  },
+  {
+    "slug": "remote-control",
+    "term": "remote control close-up",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/8/8f/Boy_tours_a_Stryker%2C_note_remote_control_for_Remote_Weapons_Station.jpg",
+    "answer": "remote-control-answer.jpg",
+    "zoom": "remote-control-zoom.jpg"
+  }
+]
