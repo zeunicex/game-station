@@ -439,6 +439,15 @@ input:focus {
   overflow: hidden;
 }
 
+.zoom .visual.clue-framed {
+  aspect-ratio: 1;
+  box-sizing: border-box;
+  height: auto;
+  min-height: 0;
+  padding: 0;
+  width: min(520px, calc(100vw - 64px));
+}
+
 .visual .zoom-clue {
   transition: transform .2s ease;
 }
@@ -483,6 +492,14 @@ input:focus {
 
 .zoom .visual img {
   width: auto;
+}
+
+.zoom .visual.clue-framed .zoom-clue {
+  height: 100%;
+  max-height: none;
+  max-width: none;
+  object-fit: cover;
+  width: 100%;
 }
 
 .visual.revealed img {
