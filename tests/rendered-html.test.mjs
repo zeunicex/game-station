@@ -26,22 +26,26 @@ test("renders the Game Station home screen", async () => {
   assert.match(html, /View scoreboard/);
 });
 
-test("has exactly 50 unique, fully configured Zoom questions", async () => {
+test("has exactly 65 unique, fully configured Zoom questions", async () => {
   const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
   const zoomBlock = page.slice(page.indexOf("  zoom: ["), page.indexOf("  bible: ["));
   const ids = [...zoomBlock.matchAll(/id: "(z\d+)"/g)].map((match) => match[1]);
   const answers = [...zoomBlock.matchAll(/answer: "([^"]+)"/g)].map((match) => match[1]);
 
-  assert.equal(ids.length, 50);
-  assert.equal(new Set(ids).size, 50);
-  assert.equal(answers.length, 50);
-  assert.deepEqual(ids, Array.from({ length: 50 }, (_, index) => `z${index + 1}`));
+  assert.equal(ids.length, 65);
+  assert.equal(new Set(ids).size, 65);
+  assert.equal(answers.length, 65);
+  assert.deepEqual(ids, Array.from({ length: 65 }, (_, index) => `z${index + 1}`));
 
   for (const required of [
     "Tennis ball", "Keyboard", "Padlock", "Recovery Version Bible",
     "Guitar strings", "Earbuds case", "Honeycomb", "Matcha", "Can opener",
     "Shower head", "Garlic press", "Binder clip", "Adjustable wrench",
     "Door hinge", "Potato masher", "Safety pin", "Clothespin",
+    "Screw threads", "Comb teeth", "Grater", "Thimble", "Cork coaster",
+    "Matchstick", "Rope", "Walnut shell", "Puzzle piece", "Measuring spoon",
+    "Makeup brush", "Light bulb filament", "Seashell", "Staple remover",
+    "Woven basket",
   ]) assert.ok(answers.includes(required), `Missing required question: ${required}`);
 
   for (const removed of [

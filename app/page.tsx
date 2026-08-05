@@ -38,7 +38,7 @@ type TeamRecord = {
 
 const roundSeconds = 300;
 const storageKey = "game-station-team-records";
-const imageVersion = "v20260805-9";
+const imageVersion = "v20260805-10";
 
 const emptyScores: Scores = { zoom: 0, bible: 0, hymn: 0 };
 const emptyRound2Progress: Round2Progress = {
@@ -98,6 +98,21 @@ const questions: Record<GameKey, Question[]> = {
     { id: "z48", image: "/questions/zoom/safety-pin-clue.png", answerImage: "/questions/zoom/safety-pin-answer.png", prompt: "What is this zoomed-in picture?", answer: "Safety pin", clueScale: 1.65, cluePosition: "42% 52%" },
     { id: "z49", image: "/questions/zoom/clothespin-answer.png", answerImage: "/questions/zoom/clothespin-answer.png", prompt: "What is this zoomed-in picture?", answer: "Clothespin", clueScale: 7, cluePosition: "50% 58%" },
     { id: "z50", image: "/questions/zoom/pepper-grinder-answer.png", answerImage: "/questions/zoom/pepper-grinder-answer.png", prompt: "What is this zoomed-in picture?", answer: "Pepper grinder", clueScale: 5.5, cluePosition: "50% 24%" },
+    { id: "z51", image: "/questions/zoom/screw-threads-zoom.png", answerImage: "/questions/zoom/screw-threads-answer.png", prompt: "What is this zoomed-in picture?", answer: "Screw threads" },
+    { id: "z52", image: "/questions/zoom/comb-teeth-zoom.png", answerImage: "/questions/zoom/comb-teeth-answer.png", prompt: "What is this zoomed-in picture?", answer: "Comb teeth" },
+    { id: "z53", image: "/questions/zoom/grater-zoom.png", answerImage: "/questions/zoom/grater-answer.png", prompt: "What is this zoomed-in picture?", answer: "Grater" },
+    { id: "z54", image: "/questions/zoom/thimble-zoom.png", answerImage: "/questions/zoom/thimble-answer.png", prompt: "What is this zoomed-in picture?", answer: "Thimble" },
+    { id: "z55", image: "/questions/zoom/cork-coaster-zoom.png", answerImage: "/questions/zoom/cork-coaster-answer.png", prompt: "What is this zoomed-in picture?", answer: "Cork coaster" },
+    { id: "z56", image: "/questions/zoom/matchstick-zoom.png", answerImage: "/questions/zoom/matchstick-answer.png", prompt: "What is this zoomed-in picture?", answer: "Matchstick" },
+    { id: "z57", image: "/questions/zoom/rope-fibers-zoom.png", answerImage: "/questions/zoom/rope-fibers-answer.png", prompt: "What is this zoomed-in picture?", answer: "Rope" },
+    { id: "z58", image: "/questions/zoom/walnut-shell-zoom.png", answerImage: "/questions/zoom/walnut-shell-answer.png", prompt: "What is this zoomed-in picture?", answer: "Walnut shell" },
+    { id: "z59", image: "/questions/zoom/puzzle-piece-zoom.png", answerImage: "/questions/zoom/puzzle-piece-answer.png", prompt: "What is this zoomed-in picture?", answer: "Puzzle piece" },
+    { id: "z60", image: "/questions/zoom/measuring-spoon-zoom.png", answerImage: "/questions/zoom/measuring-spoon-answer.png", prompt: "What is this zoomed-in picture?", answer: "Measuring spoon" },
+    { id: "z61", image: "/questions/zoom/makeup-brush-zoom.png", answerImage: "/questions/zoom/makeup-brush-answer.png", prompt: "What is this zoomed-in picture?", answer: "Makeup brush" },
+    { id: "z62", image: "/questions/zoom/light-bulb-filament-zoom.png", answerImage: "/questions/zoom/light-bulb-filament-answer.png", prompt: "What is this zoomed-in picture?", answer: "Light bulb filament" },
+    { id: "z63", image: "/questions/zoom/seashell-zoom.png", answerImage: "/questions/zoom/seashell-answer.png", prompt: "What is this zoomed-in picture?", answer: "Seashell" },
+    { id: "z64", image: "/questions/zoom/staple-remover-zoom.png", answerImage: "/questions/zoom/staple-remover-answer.png", prompt: "What is this zoomed-in picture?", answer: "Staple remover" },
+    { id: "z65", image: "/questions/zoom/woven-basket-zoom.png", answerImage: "/questions/zoom/woven-basket-answer.png", prompt: "What is this zoomed-in picture?", answer: "Woven basket" },
   ],
   bible: [
     { id: "b1", clueLines: [
