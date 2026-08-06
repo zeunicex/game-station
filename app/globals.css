@@ -26,7 +26,7 @@ button { border: 0; cursor: pointer; }
 
 .shell {
   min-height: 100vh;
-  padding: 28px 6vw;
+  padding: 25px 5.4vw;
 }
 
 .home-simple {
@@ -320,7 +320,7 @@ input:focus {
 }
 
 .play {
-  padding: 20px 5vw 18px;
+  padding: 18px 4.5vw 16px;
 }
 
 .play-header {
@@ -328,7 +328,7 @@ input:focus {
   border-bottom: 1px solid var(--line);
   display: flex;
   justify-content: space-between;
-  padding-bottom: 14px;
+  padding-bottom: 12px;
 }
 
 .play-team {
@@ -337,13 +337,13 @@ input:focus {
   gap: 12px;
 }
 
-.timer, .live-score {
+.timer, .live-score, .hint-counter {
   align-items: center;
   display: flex;
   gap: 14px;
 }
 
-.timer span, .live-score span {
+.timer span, .live-score span, .hint-counter span {
   color: var(--muted);
   font-size: 11px;
   font-weight: 800;
@@ -351,20 +351,36 @@ input:focus {
   text-transform: uppercase;
 }
 
-.timer strong { font-size: 34px; }
+.timer strong { font-size: 31px; }
 .timer.urgent strong { color: var(--coral); }
-.live-score strong { font-size: 28px; }
+.live-score strong { font-size: 26px; }
+
+.hint-counter {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  padding: 8px 12px;
+}
+
+.hint-counter strong {
+  font-size: 25px;
+}
+
+.hint-counter:disabled {
+  cursor: not-allowed;
+  opacity: .48;
+}
 
 .play-title {
   align-items: end;
   display: flex;
   justify-content: space-between;
-  margin: 18px auto 10px;
-  max-width: 840px;
+  margin: 16px auto 9px;
+  max-width: 760px;
 }
 
 .play-title h2 {
-  font-size: 30px;
+  font-size: 27px;
   line-height: 1.08;
   margin: 0;
 }
@@ -379,7 +395,7 @@ input:focus {
   background: #ded7ca;
   height: 5px;
   margin: auto;
-  max-width: 840px;
+  max-width: 760px;
 }
 
 .progress i {
@@ -390,8 +406,8 @@ input:focus {
 }
 
 .question {
-  margin: 16px auto 16px;
-  max-width: 840px;
+  margin: 14px auto 14px;
+  max-width: 760px;
   text-align: center;
 }
 
@@ -445,11 +461,11 @@ input:focus {
   height: auto;
   min-height: 0;
   padding: 0;
-  width: min(520px, calc(100vw - 64px));
+  width: min(430px, calc(100vw - 96px));
 }
 
 .visual .zoom-clue {
-  transition: transform .2s ease;
+  transition: none;
 }
 
 .clue-board {
@@ -554,9 +570,9 @@ input:focus {
 }
 
 .prompt {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 800;
-  margin: 18px 0 8px;
+  margin: 14px 0 7px;
 }
 
 .thinking {
@@ -625,8 +641,8 @@ input:focus {
 
 .actions button {
   font-weight: 800;
-  min-width: 128px;
-  padding: 12px 22px;
+  min-width: 116px;
+  padding: 11px 20px;
 }
 
 .actions button:disabled {
@@ -748,20 +764,26 @@ input:focus {
 }
 
 @media (max-width: 760px) {
-  .shell { padding: 22px; }
+  .shell { padding: 18px; }
   h1, .home-panel h1 { font-size: 52px; }
   .game-grid, .briefing-grid { grid-template-columns: 1fr; }
   .game-tile { min-height: 145px; }
   .category { width: 100%; }
-  .play-header { gap: 12px; }
+  .play { padding: 18px 20px 18px; }
+  .play-header { gap: 10px; }
   .play-team .team-badge span { display: none; }
   .play-team .team-badge strong { font-size: 15px; }
-  .timer span, .live-score span { display: none; }
-  .timer strong { font-size: 24px; }
-  .play-title { align-items: start; gap: 14px; margin-top: 18px; }
-  .play-title h2 { font-size: 24px; }
+  .timer span, .live-score span, .hint-counter span { display: none; }
+  .timer strong { font-size: 22px; }
+  .live-score strong { font-size: 23px; }
+  .hint-counter { gap: 0; padding: 8px 11px; }
+  .hint-counter strong { font-size: 21px; }
+  .play-title { align-items: start; gap: 12px; margin-top: 16px; }
+  .play-title h2 { font-size: 22px; }
+  .question-count { font-size: 13px; }
   .visual { max-width: 100%; min-height: 160px; width: fit-content; }
   .visual img { max-height: 240px; max-width: 100%; }
+  .zoom .visual.clue-framed { width: min(300px, calc(100vw - 118px)); }
   .visual.revealed { min-height: 250px; width: 100%; }
   .visual.revealed img { max-height: 300px; max-width: 100%; }
   .answer-label { bottom: 10px; max-width: 92vw; min-width: 180px; }
@@ -770,7 +792,8 @@ input:focus {
   .visual span { font-size: 96px; }
   .clue-board { --clue-size: 58px; gap: 10px; }
   .clue-line { gap: 9px; }
-  .actions button { min-width: 104px; padding: 14px 16px; }
+  .prompt { font-size: 17px; }
+  .actions button { min-width: 96px; padding: 12px 14px; }
   .score-row { grid-template-columns: 1fr; }
   .score-row > strong { text-align: left; }
 }

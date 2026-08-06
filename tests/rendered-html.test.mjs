@@ -26,33 +26,35 @@ test("renders the Game Station home screen", async () => {
   assert.match(html, /View scoreboard/);
 });
 
-test("has exactly 65 unique, fully configured Zoom questions", async () => {
+test("has exactly 61 unique, fully configured Zoom questions", async () => {
   const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
   const zoomBlock = page.slice(page.indexOf("  zoom: ["), page.indexOf("  bible: ["));
   const ids = [...zoomBlock.matchAll(/id: "(z\d+)"/g)].map((match) => match[1]);
   const answers = [...zoomBlock.matchAll(/answer: "([^"]+)"/g)].map((match) => match[1]);
 
-  assert.equal(ids.length, 65);
-  assert.equal(new Set(ids).size, 65);
-  assert.equal(answers.length, 65);
-  assert.deepEqual(ids, Array.from({ length: 65 }, (_, index) => `z${index + 1}`));
+  assert.equal(ids.length, 61);
+  assert.equal(new Set(ids).size, 61);
+  assert.equal(answers.length, 61);
+  assert.deepEqual(ids, Array.from({ length: 61 }, (_, index) => `z${index + 1}`));
 
   for (const required of [
     "Tennis ball", "Keyboard", "Padlock", "Recovery Version Bible",
     "Guitar strings", "Earbuds case", "Honeycomb", "Matcha", "Can opener",
     "Shower head", "Garlic press", "Binder clip", "Adjustable wrench",
     "Door hinge", "Potato masher", "Safety pin", "Clothespin",
-    "Screw threads", "Comb teeth", "Grater", "Thimble", "Cork coaster",
-    "Matchstick", "Rope", "Walnut shell", "Puzzle piece", "Measuring spoon",
-    "Makeup brush", "Light bulb filament", "Seashell", "Staple remover",
-    "Woven basket",
+    "Comb teeth", "Cork coaster", "Walnut shell",
+    "Fork tines", "Paper clips", "Shirt button", "Coffee beans",
+    "Denim fabric", "Bottle opener", "Cinnamon stick",
+    "Strawberry",
   ]) assert.ok(answers.includes(required), `Missing required question: ${required}`);
 
   for (const removed of [
-    "Ring", "Rubik's Cube", "Keyboard switch", "Paintbrush",
-    "Basketball", "Credit card chip", "Remote control", "Bottle cap", "Burr seed pod",
-    "Tea bag", "Whisk", "Scissors", "Measuring tape", "Wristwatch",
-    "Egg carton", "Kitchen tongs", "Push pin",
+    "Rubik's Cube", "Paintbrush", "Basketball", "Bottle cap", "Burr seed pod",
+    "Whisk", "Scissors", "Measuring tape", "Wristwatch",
+    "Egg carton", "Kitchen tongs", "Push pin", "Grater", "Thimble",
+    "Matchstick", "Rope", "Puzzle piece", "Credit card chip",
+    "Keyboard switch", "Ring", "Tea bag", "Screw threads", "Candle",
+    "Dice", "Wood grain",
   ]) assert.ok(!answers.includes(removed), `Removed question still present: ${removed}`);
 });
 
@@ -78,6 +80,14 @@ test("keeps skip rotation, answer locking, and final-question guards", async () 
   assert.match(page, /setGame\(otherGame\)/);
 });
 
+test("shows each zoom clue as a still image without live reveal animation", async () => {
+  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  const css = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
+
+  assert.match(page, /key=\{`\$\{current\.id\}-clue`\}/);
+  assert.match(css, /\.visual \.zoom-clue\s*\{[^}]*transition: none;/s);
+});
+
 test("applies the requested extra zoom and edited deer answer", async () => {
   const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
 
@@ -94,12 +104,27 @@ test("keeps the latest close-up clues boldly cropped", async () => {
   const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
 
   for (const answer of [
-    "Camera lens", "Can opener", "USB flash drive", "Chess knight",
-    "Corkscrew", "Key", "Salt shaker", "Spiral notebook", "Colander", "Pepper grinder",
+    "USB flash drive", "Corkscrew", "Key", "Salt shaker",
+    "Spiral notebook", "Colander", "Pepper grinder",
   ]) {
     const line = page.split("\n").find((candidate) => candidate.includes(`answer: "${answer}"`));
     const scale = Number(line?.match(/clueScale: ([\d.]+)/)?.[1] ?? 0);
     assert.ok(scale >= 2.8, `${answer} needs a stronger close-up crop`);
+  }
+
+  for (const [answer, file] of [
+    ["Camera lens", "camera-lens-zoom.jpg"],
+    ["Can opener", "can-opener-zoom.png"],
+    ["Chess knight", "chess-knight-zoom.png"],
+    ["Guitar strings", "guitar-zoom.jpg"],
+    ["Fork tines", "fork-tines-zoom.jpg"],
+    ["Paper clips", "paper-clips-zoom.jpg"],
+    ["Coffee beans", "coffee-beans-zoom.jpg"],
+    ["Bird", "bird-zoom.jpg"],
+  ]) {
+    const line = page.split("\n").find((candidate) => candidate.includes(`answer: "${answer}"`));
+    assert.match(line ?? "", new RegExp(`image: "/questions/zoom/${file}"`), `${answer} should use a dedicated still crop`);
+    assert.doesNotMatch(line ?? "", /clueScale:/, `${answer} should not animate a live scale`);
   }
 
   assert.match(page, /image: "\/questions\/zoom\/bird-zoom\.jpg"[^\n]+answer: "Bird"/);

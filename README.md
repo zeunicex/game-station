@@ -1,98 +1,150 @@
-# vinext-starter
+# Game Station
 
-A clean full-stack starter running on
-[vinext](https://github.com/cloudflare/vinext), with optional Cloudflare D1 and
-Drizzle support.
+An interactive team game station for a live group activity. The host enters a
+team name, runs timed rounds, marks answers, tracks hints, and saves final
+scores to a local scoreboard.
 
-## Prerequisites
+## Games Included
+
+- **Zoom & Guess**: teams guess real objects from zoomed-in photos.
+- **Bible Story**: teams guess Bible stories from picture and emoji clues.
+- **Hymn Guess**: teams guess hymn titles from picture and emoji clues.
+
+Zoom has its own 5-minute timer. Bible Story and Hymn share another 5-minute
+timer, so the host can switch between those two categories during the same
+round.
+
+## Host Controls
+
+- **Correct**: adds 1 point and reveals the answer.
+- **Skip**: moves the question to the back of the queue so it can return later.
+- **Wrong**: reveals the answer without adding a point. Use this only when the
+  team wants to know the answer.
+- **Hints**: counts down oral hints. Zoom has 5 hints. Bible Story and Hymn
+  share 5 hints total.
+
+The team can keep guessing as many questions as possible within the time limit.
+
+## Run Locally
+
+Requirements:
 
 - Node.js `>=22.13.0`
+- npm
 
-## Quick Start
+Install dependencies:
 
 ```bash
 npm install
+```
+
+Start the local game:
+
+```bash
 npm run dev
-npm run build
 ```
 
-This starter does not use `wrangler.jsonc`.
+Open the local URL shown in the terminal, usually:
 
-## Included Shape
-
-- edit site code under `app/`
-- `.openai/hosting.json` declares optional Sites D1 and R2 bindings
-- `vite.config.ts` simulates declared bindings for local development
-- `db/schema.ts` starts intentionally empty
-- `examples/d1/` contains an optional D1 example surface
-- `drizzle.config.ts` supports local migration generation when needed
-
-## Workspace Auth Headers
-
-OpenAI workspace sites can read the current user's email from
-`oai-authenticated-user-email`.
-
-SIWC-authenticated workspace sites may also receive
-`oai-authenticated-user-full-name` when the user's SIWC profile has a non-empty
-`name` claim. The full-name value is percent-encoded UTF-8 and is accompanied by
-`oai-authenticated-user-full-name-encoding: percent-encoded-utf-8`.
-
-Treat the full name as optional and fall back to email when it is absent:
-
-```tsx
-import { headers } from "next/headers";
-
-export default async function Home() {
-  const requestHeaders = await headers();
-  const email = requestHeaders.get("oai-authenticated-user-email");
-  const encodedFullName = requestHeaders.get("oai-authenticated-user-full-name");
-  const fullName =
-    encodedFullName &&
-    requestHeaders.get("oai-authenticated-user-full-name-encoding") ===
-      "percent-encoded-utf-8"
-      ? decodeURIComponent(encodedFullName)
-      : null;
-
-  const displayName = fullName ?? email;
-  // ...
-}
+```text
+http://localhost:3000/
 ```
 
-## Optional Dispatch-Owned ChatGPT Sign-In
+If port 3000 is already busy, the app will choose another port such as
+`http://localhost:3001/`.
 
-Import the ready-to-use helpers from `app/chatgpt-auth.ts` when the site needs
-optional or required ChatGPT sign-in:
+## Run On Another Device
 
-- Use `getChatGPTUser()` for optional signed-in UI.
-- Use `requireChatGPTUser(returnTo)` for server-rendered pages that should send
-  anonymous visitors through Sign in with ChatGPT.
-- Use `chatGPTSignInPath(returnTo)` and `chatGPTSignOutPath(returnTo)` for
-  browser links or actions.
-- Pass a same-origin relative `returnTo` path for the destination after sign-in
-  or sign-out. The helper validates and safely encodes it.
-- Mark protected pages with `export const dynamic = "force-dynamic"` because
-  they depend on per-request identity headers.
+For another phone or laptop on the **same Wi-Fi network**:
 
-Dispatch owns `/signin-with-chatgpt`, `/signout-with-chatgpt`, `/callback`, the
-OAuth cookies, and identity header injection. Do not implement app routes for
-those reserved paths. Routes that do not import and call the helper remain
-anonymous-compatible.
+1. Start the app with:
 
-SIWC establishes identity only; it does not prove workspace membership. Use the
-Sites hosting platform's access policy controls for workspace-wide restrictions,
-or enforce explicit server-side membership or allowlist checks.
+   ```bash
+   npm run dev -- --host 0.0.0.0
+   ```
 
-Use SIWC for account pages, user-specific dashboards, saved records, and write
-actions tied to the current ChatGPT user. Leave public content anonymous.
+2. Find the computer's local IP address.
 
-## Useful Commands
+   On macOS:
 
-- `npm run dev`: start local development
-- `npm run build`: verify the vinext build output
-- `npm test`: build the starter and verify its rendered loading skeleton
-- `npm run db:generate`: generate Drizzle migrations after schema changes
+   ```bash
+   ipconfig getifaddr en0
+   ```
 
-## Learn More
+3. On the other device, open:
 
-- [vinext Documentation](https://github.com/cloudflare/vinext)
-- [Drizzle D1 Guide](https://orm.drizzle.team/docs/get-started/d1-new)
+   ```text
+   http://YOUR_LOCAL_IP:3000/
+   ```
+
+   Example:
+
+   ```text
+   http://192.168.1.25:3000/
+   ```
+
+For a device on **5G or a different network**, use the hosted website version
+instead of localhost. Localhost only works on the machine running the app.
+
+## Scoreboard Data
+
+Scores are saved in the browser's local storage.
+
+That means:
+
+- Scores stay on the same browser/device after refresh.
+- Scores do not automatically sync across different devices.
+- Clearing browser data can erase saved scores.
+- The **Clear scoreboard** button removes saved results from that browser.
+
+## Edit Questions
+
+Main game content lives in:
+
+```text
+app/page.tsx
+```
+
+Question images live in:
+
+```text
+public/questions/
+```
+
+Zoom image pairs usually follow this pattern:
+
+```text
+public/questions/zoom/example-zoom.jpg
+public/questions/zoom/example-answer.jpg
+```
+
+When adding or removing Zoom questions, update the question list in
+`app/page.tsx` and keep the tests in `tests/rendered-html.test.mjs` in sync.
+
+## Verify Before Using
+
+Run:
+
+```bash
+npm test
+```
+
+This builds the app and checks that the configured question images exist and the
+main game behavior is still protected.
+
+## Project Structure
+
+```text
+app/
+  page.tsx        Main game logic and question data
+  globals.css     Main styling
+public/questions/ Question image assets
+tests/            Render and configuration tests
+```
+
+## Notes For Future Setup
+
+- Use the hosted website when players need to access the game from another
+  network.
+- Use local development when editing questions or testing changes.
+- Commit both question data and the image files whenever game content changes.

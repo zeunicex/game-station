@@ -20,6 +20,7 @@ type Question = {
   cluePosition?: string;
 };
 type Scores = Record<GameKey, number>;
+type HintCounts = { zoom: number; round2: number };
 type Round2Key = "bible" | "hymn";
 type Round2State = {
   queue: string[];
@@ -38,9 +39,10 @@ type TeamRecord = {
 
 const roundSeconds = 300;
 const storageKey = "game-station-team-records";
-const imageVersion = "v20260805-10";
+const imageVersion = "v20260806-4";
 
 const emptyScores: Scores = { zoom: 0, bible: 0, hymn: 0 };
+const startingHints: HintCounts = { zoom: 5, round2: 5 };
 const emptyRound2Progress: Round2Progress = {
   bible: { queue: [], completed: 0, revealed: false, locked: false },
   hymn: { queue: [], completed: 0, revealed: false, locked: false },
@@ -62,13 +64,13 @@ const questions: Record<GameKey, Question[]> = {
     { id: "z12", image: "/questions/zoom/keyboard-zoom.jpg", answerImage: "/questions/zoom/keyboard-answer.jpg", prompt: "What is this zoomed-in picture?", answer: "Keyboard" },
     { id: "z13", image: "/questions/zoom/padlock-zoom.jpg", answerImage: "/questions/zoom/padlock-answer.jpg", prompt: "What is this zoomed-in picture?", answer: "Padlock" },
     { id: "z14", image: "/questions/zoom/recovery-bible-zoom.jpg", answerImage: "/questions/zoom/recovery-bible-answer.jpg", prompt: "What is this zoomed-in picture?", answer: "Recovery Version Bible" },
-    { id: "z15", image: "/questions/zoom/camera-lens-zoom.jpg", answerImage: "/questions/zoom/camera-lens-answer.jpg", prompt: "What is this zoomed-in picture?", answer: "Camera lens", clueScale: 2.8, cluePosition: "50% 50%" },
+    { id: "z15", image: "/questions/zoom/camera-lens-zoom.jpg", answerImage: "/questions/zoom/camera-lens-answer.jpg", prompt: "What is this zoomed-in picture?", answer: "Camera lens" },
     { id: "z16", image: "/questions/zoom/shoe-sole-zoom.jpg", answerImage: "/questions/zoom/shoe-sole-answer.jpg", prompt: "What is this zoomed-in picture?", answer: "Shoe sole", clueScale: 1.4 },
     { id: "z17", image: "/questions/zoom/orange-zoom.jpg", answerImage: "/questions/zoom/orange-answer.jpg", prompt: "What is this zoomed-in picture?", answer: "Orange peel" },
     { id: "z18", image: "/questions/zoom/microphone-zoom.jpg", answerImage: "/questions/zoom/microphone-answer.jpg", prompt: "What is this zoomed-in picture?", answer: "Microphone", clueScale: 1.45 },
     { id: "z19", image: "/questions/zoom/guitar-zoom.jpg", answerImage: "/questions/zoom/guitar-answer.jpg", prompt: "What is this zoomed-in picture?", answer: "Guitar strings" },
     { id: "z20", image: "/questions/zoom/sponge-zoom.jpg", answerImage: "/questions/zoom/sponge-answer.jpg", prompt: "What is this zoomed-in picture?", answer: "Sponge" },
-    { id: "z21", image: "/questions/zoom/can-opener-answer.png", answerImage: "/questions/zoom/can-opener-answer.png", prompt: "What is this zoomed-in picture?", answer: "Can opener", clueScale: 7, cluePosition: "49% 27%" },
+    { id: "z21", image: "/questions/zoom/can-opener-zoom.png", answerImage: "/questions/zoom/can-opener-answer.png", prompt: "What is this zoomed-in picture?", answer: "Can opener" },
     { id: "z22", image: "/questions/zoom/zipper-zoom.jpg", answerImage: "/questions/zoom/zipper-answer.jpg", prompt: "What is this zoomed-in picture?", answer: "Zipper" },
     { id: "z23", image: "/questions/zoom/pencil-tip-zoom.jpg", answerImage: "/questions/zoom/pencil-tip-answer.jpg", prompt: "What is this zoomed-in picture?", answer: "Pencil tip", clueScale: 2.35, cluePosition: "50% 47%" },
     { id: "z24", image: "/questions/zoom/stapler-zoom.jpg", answerImage: "/questions/zoom/stapler-answer.jpg", prompt: "What is this zoomed-in picture?", answer: "Stapler" },
@@ -82,7 +84,7 @@ const questions: Record<GameKey, Question[]> = {
     { id: "z32", image: "/questions/zoom/sewing-needle-zoom.jpg", answerImage: "/questions/zoom/sewing-needle-answer.jpg", prompt: "What is this zoomed-in picture?", answer: "Sewing needle" },
     { id: "z33", image: "/questions/zoom/shower-head-answer.png", answerImage: "/questions/zoom/shower-head-answer.png", prompt: "What is this zoomed-in picture?", answer: "Shower head", clueScale: 4.8, cluePosition: "52% 48%" },
     { id: "z34", image: "/questions/zoom/usb-drive-answer.png", answerImage: "/questions/zoom/usb-drive-answer.png", prompt: "What is this zoomed-in picture?", answer: "USB flash drive", clueScale: 8, cluePosition: "65% 58%" },
-    { id: "z35", image: "/questions/zoom/chess-knight-answer.png", answerImage: "/questions/zoom/chess-knight-answer.png", prompt: "What is this zoomed-in picture?", answer: "Chess knight", clueScale: 7.2, cluePosition: "54% 34%" },
+    { id: "z35", image: "/questions/zoom/chess-knight-zoom.png", answerImage: "/questions/zoom/chess-knight-answer.png", prompt: "What is this zoomed-in picture?", answer: "Chess knight" },
     { id: "z36", image: "/questions/zoom/garlic-press-answer.png", answerImage: "/questions/zoom/garlic-press-answer.png", prompt: "What is this zoomed-in picture?", answer: "Garlic press", clueScale: 5, cluePosition: "31% 67%" },
     { id: "z37", image: "/questions/zoom/binder-clip-clue.png", answerImage: "/questions/zoom/binder-clip-answer.png", prompt: "What is this zoomed-in picture?", answer: "Binder clip", clueScale: 1.35 },
     { id: "z38", image: "/questions/zoom/corkscrew-answer.png", answerImage: "/questions/zoom/corkscrew-answer.png", prompt: "What is this zoomed-in picture?", answer: "Corkscrew", clueScale: 7, cluePosition: "50% 62%" },
@@ -98,25 +100,21 @@ const questions: Record<GameKey, Question[]> = {
     { id: "z48", image: "/questions/zoom/safety-pin-clue.png", answerImage: "/questions/zoom/safety-pin-answer.png", prompt: "What is this zoomed-in picture?", answer: "Safety pin", clueScale: 1.65, cluePosition: "42% 52%" },
     { id: "z49", image: "/questions/zoom/clothespin-answer.png", answerImage: "/questions/zoom/clothespin-answer.png", prompt: "What is this zoomed-in picture?", answer: "Clothespin", clueScale: 7, cluePosition: "50% 58%" },
     { id: "z50", image: "/questions/zoom/pepper-grinder-answer.png", answerImage: "/questions/zoom/pepper-grinder-answer.png", prompt: "What is this zoomed-in picture?", answer: "Pepper grinder", clueScale: 5.5, cluePosition: "50% 24%" },
-    { id: "z51", image: "/questions/zoom/screw-threads-zoom.png", answerImage: "/questions/zoom/screw-threads-answer.png", prompt: "What is this zoomed-in picture?", answer: "Screw threads" },
-    { id: "z52", image: "/questions/zoom/comb-teeth-zoom.png", answerImage: "/questions/zoom/comb-teeth-answer.png", prompt: "What is this zoomed-in picture?", answer: "Comb teeth" },
-    { id: "z53", image: "/questions/zoom/grater-zoom.png", answerImage: "/questions/zoom/grater-answer.png", prompt: "What is this zoomed-in picture?", answer: "Grater" },
-    { id: "z54", image: "/questions/zoom/thimble-zoom.png", answerImage: "/questions/zoom/thimble-answer.png", prompt: "What is this zoomed-in picture?", answer: "Thimble" },
-    { id: "z55", image: "/questions/zoom/cork-coaster-zoom.png", answerImage: "/questions/zoom/cork-coaster-answer.png", prompt: "What is this zoomed-in picture?", answer: "Cork coaster" },
-    { id: "z56", image: "/questions/zoom/matchstick-zoom.png", answerImage: "/questions/zoom/matchstick-answer.png", prompt: "What is this zoomed-in picture?", answer: "Matchstick" },
-    { id: "z57", image: "/questions/zoom/rope-fibers-zoom.png", answerImage: "/questions/zoom/rope-fibers-answer.png", prompt: "What is this zoomed-in picture?", answer: "Rope" },
-    { id: "z58", image: "/questions/zoom/walnut-shell-zoom.png", answerImage: "/questions/zoom/walnut-shell-answer.png", prompt: "What is this zoomed-in picture?", answer: "Walnut shell" },
-    { id: "z59", image: "/questions/zoom/puzzle-piece-zoom.png", answerImage: "/questions/zoom/puzzle-piece-answer.png", prompt: "What is this zoomed-in picture?", answer: "Puzzle piece" },
-    { id: "z60", image: "/questions/zoom/measuring-spoon-zoom.png", answerImage: "/questions/zoom/measuring-spoon-answer.png", prompt: "What is this zoomed-in picture?", answer: "Measuring spoon" },
-    { id: "z61", image: "/questions/zoom/makeup-brush-zoom.png", answerImage: "/questions/zoom/makeup-brush-answer.png", prompt: "What is this zoomed-in picture?", answer: "Makeup brush" },
-    { id: "z62", image: "/questions/zoom/light-bulb-filament-zoom.png", answerImage: "/questions/zoom/light-bulb-filament-answer.png", prompt: "What is this zoomed-in picture?", answer: "Light bulb filament" },
-    { id: "z63", image: "/questions/zoom/seashell-zoom.png", answerImage: "/questions/zoom/seashell-answer.png", prompt: "What is this zoomed-in picture?", answer: "Seashell" },
-    { id: "z64", image: "/questions/zoom/staple-remover-zoom.png", answerImage: "/questions/zoom/staple-remover-answer.png", prompt: "What is this zoomed-in picture?", answer: "Staple remover" },
-    { id: "z65", image: "/questions/zoom/woven-basket-zoom.png", answerImage: "/questions/zoom/woven-basket-answer.png", prompt: "What is this zoomed-in picture?", answer: "Woven basket" },
+    { id: "z51", image: "/questions/zoom/comb-teeth-zoom.jpg", answerImage: "/questions/zoom/comb-teeth-answer.jpg", prompt: "What is this zoomed-in picture?", answer: "Comb teeth" },
+    { id: "z52", image: "/questions/zoom/cork-coaster-zoom.jpg", answerImage: "/questions/zoom/cork-coaster-answer.jpg", prompt: "What is this zoomed-in picture?", answer: "Cork coaster" },
+    { id: "z53", image: "/questions/zoom/walnut-shell-zoom.jpg", answerImage: "/questions/zoom/walnut-shell-answer.jpg", prompt: "What is this zoomed-in picture?", answer: "Walnut shell" },
+    { id: "z54", image: "/questions/zoom/fork-tines-zoom.jpg", answerImage: "/questions/zoom/fork-tines-answer.jpg", prompt: "What is this zoomed-in picture?", answer: "Fork tines" },
+    { id: "z55", image: "/questions/zoom/paper-clips-zoom.jpg", answerImage: "/questions/zoom/paper-clips-answer.jpg", prompt: "What is this zoomed-in picture?", answer: "Paper clips" },
+    { id: "z56", image: "/questions/zoom/shirt-button-zoom.jpg", answerImage: "/questions/zoom/shirt-button-answer.jpg", prompt: "What is this zoomed-in picture?", answer: "Shirt button" },
+    { id: "z57", image: "/questions/zoom/coffee-beans-zoom.jpg", answerImage: "/questions/zoom/coffee-beans-answer.jpg", prompt: "What is this zoomed-in picture?", answer: "Coffee beans" },
+    { id: "z58", image: "/questions/zoom/denim-fabric-zoom.jpg", answerImage: "/questions/zoom/denim-fabric-answer.jpg", prompt: "What is this zoomed-in picture?", answer: "Denim fabric" },
+    { id: "z59", image: "/questions/zoom/bottle-opener-zoom.jpg", answerImage: "/questions/zoom/bottle-opener-answer.jpg", prompt: "What is this zoomed-in picture?", answer: "Bottle opener" },
+    { id: "z60", image: "/questions/zoom/cinnamon-stick-zoom.jpg", answerImage: "/questions/zoom/cinnamon-stick-answer.jpg", prompt: "What is this zoomed-in picture?", answer: "Cinnamon stick" },
+    { id: "z61", image: "/questions/zoom/strawberry-zoom.jpg", answerImage: "/questions/zoom/strawberry-answer.jpg", prompt: "What is this zoomed-in picture?", answer: "Strawberry" },
   ],
   bible: [
     { id: "b1", clueLines: [
-      [{ type: "emoji", value: "👩" }, { type: "emoji", value: "🫙" }, { type: "emoji", value: "🫙" }, { type: "image", src: "/questions/bible/oil.png", alt: "Oil" }, { type: "image", src: "/questions/bible/oil.png", alt: "Oil" }],
+      [{ type: "emoji", value: "👩" }, { type: "emoji", value: "🫙" }, { type: "emoji", value: "🫙" }, { type: "image", src: "/questions/hymn/olive-oil.png", alt: "Oil" }, { type: "image", src: "/questions/hymn/olive-oil.png", alt: "Oil" }],
     ], prompt: "Which Bible story do these picture clues show?", answer: "The Widow's Oil", answerTitle: "The Widow's Oil", answerLyrics: `2 Kings 4:1 Now a certain woman from among the wives of the sons of the prophets cried out to Elisha, saying, Your servant my husband is dead, and you know that your servant feared Jehovah. And the creditor has come to take my two children to himself as servants.
 2 Kings 4:2 And Elisha said to her, What shall I do for you? Tell me, what do you have in your house? And she said, Your servant has nothing at all in the house, except a jar of oil.
 2 Kings 4:3 And he said, Go and borrow vessels outside, from all your neighbors, empty vessels, and not just a few.
@@ -313,10 +311,12 @@ const gameMeta: Record<GameKey, { title: string; label: string; round: string; c
     round: "Round 1",
     color: "coral",
     rules: [
-      "The team sees one zoomed-in image at a time.",
-      "Say the answer out loud before the host reveals it.",
-      "Correct answers earn 1 point. Wrong answers reveal the answer but do not add points.",
-      "Skipped questions move to the end and can come back later.",
+      "The host controls the buttons while the team guesses out loud.",
+      "Use Correct when the team gets the item right.",
+      "Use Skip when the team wants to try again later.",
+      "Use Wrong only when the team wants to reveal the answer.",
+      "If the host gives an oral hint, tap the Hints counter. Zoom has 5 hints total.",
+      "The team can guess as many items as possible in 5 minutes.",
     ],
   },
   bible: {
@@ -325,10 +325,13 @@ const gameMeta: Record<GameKey, { title: string; label: string; round: string; c
     round: "Round 2",
     color: "blue",
     rules: [
-      "Look at the picture or emoji clues.",
-      "Guess the Bible story as a team.",
-      "Correct answers earn 1 point. Wrong answers reveal the answer.",
-      "You can switch to Hymn later from the menu if this category runs out.",
+      "The host controls the buttons while the team guesses out loud.",
+      "Use Correct when the team names the Bible story.",
+      "Use Skip when the team wants to try again later.",
+      "Use Wrong only when the team wants to reveal the answer.",
+      "If the host gives an oral hint, tap the Hints counter.",
+      "Bible Story and Hymn share one 5-minute timer.",
+      "Bible Story and Hymn also share 5 hints total.",
     ],
   },
   hymn: {
@@ -337,11 +340,44 @@ const gameMeta: Record<GameKey, { title: string; label: string; round: string; c
     round: "Round 2",
     color: "gold",
     rules: [
-      "Look at the clue set and guess the hymn title.",
-      "The host marks Correct, Wrong, or Skip.",
-      "Correct answers earn 1 point.",
-      "Skipped questions return after the other questions.",
+      "The host controls the buttons while the team guesses out loud.",
+      "Use Correct when the team names the hymn.",
+      "Use Skip when the team wants to try again later.",
+      "Use Wrong only when the team wants to reveal the answer.",
+      "If the host gives an oral hint, tap the Hints counter.",
+      "Bible Story and Hymn share one 5-minute timer.",
+      "Bible Story and Hymn also share 5 hints total.",
     ],
+  },
+};
+
+const sampleQuestions: Record<GameKey, Question> = {
+  zoom: {
+    id: "sample-zoom",
+    visual: "🍎",
+    prompt: "What is this sample clue?",
+    answer: "Apple",
+  },
+  bible: {
+    id: "sample-bible",
+    clueLines: [[
+      { type: "emoji", value: "🌧️" },
+      { type: "emoji", value: "🚢" },
+      { type: "emoji", value: "🕊️" },
+      { type: "emoji", value: "🌈" },
+    ]],
+    prompt: "What is this sample clue?",
+    answer: "Noah's Ark",
+  },
+  hymn: {
+    id: "sample-hymn",
+    clueLines: [[
+      { type: "emoji", value: "✨" },
+      { type: "emoji", value: "🙏" },
+      { type: "emoji", value: "🎶" },
+    ]],
+    prompt: "What is this sample clue?",
+    answer: "Amazing Grace",
   },
 };
 
@@ -349,6 +385,7 @@ export default function Home() {
   const [screen, setScreen] = useState<Screen>("home");
   const [team, setTeam] = useState("");
   const [scores, setScores] = useState<Scores>(emptyScores);
+  const [hints, setHints] = useState<HintCounts>(startingHints);
   const [game, setGame] = useState<GameKey>("zoom");
   const [index, setIndex] = useState(0);
   const [queue, setQueue] = useState<string[]>([]);
@@ -364,11 +401,13 @@ export default function Home() {
   const scoringLockRef = useRef(false);
 
   const current = questions[game].find((q) => q.id === queue[0]);
-  const sample = questions[game][0];
+  const sample = sampleQuestions[game];
   const total = scores.zoom + scores.bible + scores.hymn;
   const questionTotal = questions[game].length;
   const progress = Math.max(0, Math.min(100, (index / Math.max(questionTotal, 1)) * 100));
   const timeLabel = `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;
+  const hintKey: keyof HintCounts = game === "zoom" ? "zoom" : "round2";
+  const hintsLeft = hints[hintKey];
   const imageSrc = (src?: string) => src ? `${src}?${imageVersion}` : undefined;
   const renderClue = (question: Question) => {
     if (question.clueLines) {
@@ -552,6 +591,13 @@ export default function Home() {
     }
   };
 
+  const useHint = () => {
+    setHints((currentHints) => {
+      if (currentHints[hintKey] <= 0) return currentHints;
+      return { ...currentHints, [hintKey]: currentHints[hintKey] - 1 };
+    });
+  };
+
   const saveFinalScore = () => {
     if (savedRecordId || !teamName) return;
     const record: TeamRecord = {
@@ -568,6 +614,7 @@ export default function Home() {
   const resetTeam = () => {
     scoringLockRef.current = false;
     setScores(emptyScores);
+    setHints(startingHints);
     setSavedRecordId(null);
     setTeam("");
     setRound2Active(false);
@@ -644,7 +691,7 @@ export default function Home() {
           </div>
           <div className="sample-card">
             {sample.image ? <img src={imageSrc(sample.image)} alt="Sample clue" /> : renderClue(sample)}
-            <small>Sample clue</small>
+            <small>Practice sample</small>
             <strong>{sample.answer}</strong>
           </div>
         </section>
@@ -702,6 +749,7 @@ export default function Home() {
       <header className="play-header">
         <div className="play-team"><span className="brand-mark">GS</span>{teamBadge}</div>
         <div className={`timer ${seconds < 30 ? "urgent" : ""}`}><span>Time left</span><strong>{timeLabel}</strong></div>
+        <button className="hint-counter" onClick={useHint} disabled={hintsLeft <= 0} type="button"><span>Hints</span><strong>{hintsLeft}</strong></button>
         <div className="live-score"><span>Score</span><strong>{total}</strong></div>
       </header>
       <div className="play-title">
@@ -711,7 +759,7 @@ export default function Home() {
       <div className="progress"><i style={{ width: `${progress}%` }} /></div>
       <section className="question">
         <div className={`visual ${revealed ? "revealed" : ""} ${!revealed && current?.image ? "clue-framed" : ""}`} aria-label="question visual">
-          {!current ? <strong>Category complete</strong> : revealed && current.answerImage ? <img src={imageSrc(current.answerImage)} alt={current.answer} /> : current.image ? <img className="zoom-clue" style={{ transform: `scale(${current.clueScale ?? 1})`, transformOrigin: current.cluePosition ?? "center" }} src={imageSrc(current.image)} alt="Zoomed-in clue" /> : renderClue(current)}
+          {!current ? <strong>Category complete</strong> : revealed && current.answerImage ? <img key={`${current.id}-answer`} src={imageSrc(current.answerImage)} alt={current.answer} /> : current.image ? <img key={`${current.id}-clue`} className="zoom-clue" style={{ transform: `scale(${current.clueScale ?? 1})`, transformOrigin: current.cluePosition ?? "center" }} src={imageSrc(current.image)} alt="Zoomed-in clue" /> : renderClue(current)}
           {current && revealed && <div className={`answer-label ${game === "bible" ? "scripture" : ""}`}><small>Answer</small><strong>{current.answerTitle ?? current.answer}</strong>{current.answerLyrics && <p>{current.answerLyrics}</p>}</div>}
         </div>
         <p className="prompt">{current?.prompt ?? "All questions in this category are complete."}</p>
